@@ -1,0 +1,44 @@
+First, I downloaded the tarball from the assignment website, extracted the
+files from my local machine, and then used Cyberduck to transfer to the
+seasnet server.
+
+I first typed 'make' - this output the following: gcc  -g3 -Wall -Wextra
+-fanalyzer -march=native -mtune=native -mrdrnd randall.c -o randall
+Then, I ran './randall' - this told me that the correct usage was
+./randall NBYTES
+So, I tried './randall 100' and this output:
+_q?]?=>???X,#?-qO??)?[??6?H0?NU??/??ϴ/??N??o@?#l?x??????hn
+To clean it up a bit, I ran './randall 100 | od -ta', which returned:
+0000000   [   D enq   j   w   S   h   W   -   ; can  gs   2   Q   P   7
+0000020   9   i   d   5 dc3   X   f   { nul   I  vt   ' enq   S   N   e
+0000040   ?   P   +   m   4   q   {  gs   h   I   #   (  bs   j  us dc2
+0000060   @  vt  rs  em   G   w  si   k   Z   ;   = soh   ?   n dc2   (
+0000100   6  si   p   ~ stx   P  fs   ?   l   H  fs soh   : nak enq   G
+0000120   y   $ sub   6   ?   u   *   z   f   '   \   Q  gs   + soh  fs
+0000140   l   R stx  cr
+0000144
+
+
+First goal: read and understand the code in randall.c
+I opened it and got scared because it was 201 lines - first 30 or so
+were comments and include statements, however.
+The following are my notes as I tried to understand the code:
+Lines 35-56: figures out what CPU you're running and determines if it can
+support the RDRAND instruction
+Line 58-78: uses CPU hardware to generate a random 64 bit number
+Lines 82-111: uses software from /dev/random to generate random 64 bit num
+Lines 113-126: function that writes the characters of the 64 bit num
+- contains bit shift to print bytes
+Lines 128-153: main figures out how many bytes to  print
+Lines 155-171: figures out whether to use hardware or software to generate
+random number
+Lines 177-201: writes characters 1 at a time, fetching a new random number
+as needed
+
+Next: read and understand the code in Makefile
+On line 31: default: randall
+randall: looks for a file named randall.c, and executes command gcc <flags>
+with input randall.c and output randall (executable) //$@ is randall
+randall-assignment: helps tar it for you
+
+
