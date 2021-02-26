@@ -88,3 +88,8 @@ nbytes as a parameter that it could edit to put back in main.
 Next step: rand64-hw.c. I first moved the 3 relevant code chunks into a .c file,
 and put their function declarations in the header file. This was fairly simple;
 just took a while to debug accidental deletions.
+
+Next step: rand64-sw.c. Moved relevant 3 chunks to .c, removed 'static', put
+declarations in .h, added to Makefile.
+
+TODO: make sure each .c has minimum libraries required

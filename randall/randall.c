@@ -33,6 +33,8 @@
 #include "output.h"
 #include "options.h"
 #include "rand64-hw.h"
+#include "rand64-sw.h"
+
 
 /* Hardware implementation.  */
 
@@ -58,36 +60,9 @@ rdrand_supported (void)
   return (extended.ecx & bit_RDRND) != 0;
 }
 
-/* Software implementation.  */
+/* moved Hardware implementation*/
 
-/* Input stream containing random bytes.  */
-static FILE *urandstream;
-
-/* Initialize the software rand64 implementation.  */
-static void
-software_rand64_init (void)
-{
-  urandstream = fopen ("/dev/random", "r");
-  if (! urandstream)
-    abort ();
-}
-
-/* Return a random value, using software operations.  */
-static unsigned long long
-software_rand64 (void)
-{
-  unsigned long long int x;
-  if (fread (&x, sizeof x, 1, urandstream) != 1)
-    abort ();
-  return x;
-}
-
-/* Finalize the software rand64 implementation.  */
-static void
-software_rand64_fini (void)
-{
-  fclose (urandstream);
-}
+/* moved Software implementation.  */
 
 /* moved writebytes to output.c*/
 
