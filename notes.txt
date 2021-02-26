@@ -73,3 +73,12 @@ compilation terminated.
 
 To fix this, I tried adding #include "options.h" and #include "output.h" to 
 the relevant files.
+
+I ended up backtracking and only trying to make a change to "output.c" and
+"output.h" to see if I could pinpoint the error. After attending office hours,
+I realized it was because I left the word "static" on my function defs/decls,
+which made it local. Big sad.
+
+Now that output.c was working, I moved on to options.c. I moved the first part
+of main to options.c, and created an empty options.h with include guards. Added
+options.c to the line in Makefile. Ran 'make'.

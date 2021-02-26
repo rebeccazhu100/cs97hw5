@@ -31,8 +31,8 @@
 #include <stdlib.h>
 
 #include "output.h"
-
-//#include "options.h"
+#include "options.h"
+//#include "rand64-hw.h"
 
 /* Hardware implementation.  */
 
@@ -114,49 +114,39 @@ software_rand64_fini (void)
   fclose (urandstream);
 }
 
-/* TODO: writebytes to output.c*/
-// static bool
-// writebytes (unsigned long long x, int nbytes)
-// {
-//   do
-//     {
-//       if (putchar (x) < 0)
-// 	return false;
-//       x >>= CHAR_BIT;
-//       nbytes--;
-//     }
-//   while (0 < nbytes);
-
-//   return true;
-// }
-
+/* moved writebytes to output.c*/
 
 /* Main program, which outputs N bytes of random data.  */
-int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
-  /* Check arguments.  */
-  bool valid = false;
-  long long nbytes;
-  if (argc == 2)
-  {
-      char *endptr;
-      errno = 0;
-      nbytes = strtoll (argv[1], &endptr, 10);
-      if (errno)
-  perror (argv[1]);
-      else
-  valid = !*endptr && 0 <= nbytes;
-  }
-  if (!valid)
-  {
-      fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
-      return 1;
-  }
+/* moved to options.c*/
 
-/* If there's no work to do, don't worry about which library to use.  */
-if (nbytes == 0)
-return 0;
+  long long nbytes;
+  options(argc, argv, &nbytes);
+  // bool valid = false;
+
+  // printf("test1");
+  // getchar();
+
+  // if (argc == 2) {
+  //     char *endptr;
+  //     errno = 0;
+  //     nbytes = strtoll (argv[1], &endptr, 10);
+  //     if (errno)
+  // perror (argv[1]);
+  //     else
+  // valid = !*endptr && 0 <= nbytes;
+  // }
+  // if (!valid)
+  // {
+  //     fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
+  //     return 1;
+  // }
+
+
+  /* If there's no work to do, don't worry about which library to use.  */
+  if (nbytes == 0)
+  return 0;
 
   /* Now that we know we have work to do, arrange to use the
      appropriate library.  */
