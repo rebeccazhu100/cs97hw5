@@ -81,4 +81,10 @@ which made it local. Big sad.
 
 Now that output.c was working, I moved on to options.c. I moved the first part
 of main to options.c, and created an empty options.h with include guards. Added
-options.c to the line in Makefile. Ran 'make'.
+options.c to the line in Makefile. Ran 'make'. Ended up having to put it within
+a function that could be called in main. Made sure the function included
+nbytes as a parameter that it could edit to put back in main.
+
+Next step: rand64-hw.c. I first moved the 3 relevant code chunks into a .c file,
+and put their function declarations in the header file. This was fairly simple;
+just took a while to debug accidental deletions.

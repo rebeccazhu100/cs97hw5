@@ -31,7 +31,7 @@ TAREXT = txz
 default: randall
 
 randall: randall.c
-	$(CC) $(CFLAGS) $@.c options.c output.c -o $@
+	$(CC) $(CFLAGS) $@.c options.c output.c rand64-hw.c -o $@
 
 check: randall test_script.sh
 	./test_script.sh
