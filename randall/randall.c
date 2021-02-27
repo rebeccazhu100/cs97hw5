@@ -24,11 +24,11 @@
 
 #include <cpuid.h>
 #include <errno.h>
-#include <immintrin.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "output.h"
 #include "options.h"
@@ -69,30 +69,17 @@ rdrand_supported (void)
 /* Main program, which outputs N bytes of random data.  */
 int main (int argc, char **argv)
 {
-/* moved to options.c*/
+  /* moved some stuff to options.c*/
+  struct options opt = {};
+  parseOptions(argc, argv, &opt);
 
-  long long nbytes;
-  options(argc, argv, &nbytes);
-  // bool valid = false;
+  if (!opt.valid) {
+    fprintf (stderr, "Bad usage, please try again");
+    return 1;
+  }
 
-  // printf("test1");
-  // getchar();
-
-  // if (argc == 2) {
-  //     char *endptr;
-  //     errno = 0;
-  //     nbytes = strtoll (argv[1], &endptr, 10);
-  //     if (errno)
-  // perror (argv[1]);
-  //     else
-  // valid = !*endptr && 0 <= nbytes;
-  // }
-  // if (!valid)
-  // {
-  //     fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
-  //     return 1;
-  // }
-
+  long long nbytes = opt.nbytes;
+  // options(argc, argv, &nbytes);
 
   /* If there's no work to do, don't worry about which library to use.  */
   if (nbytes == 0)
@@ -103,18 +90,39 @@ int main (int argc, char **argv)
   void (*initialize) (void);
   unsigned long long (*rand64) (void);
   void (*finalize) (void);
-  if (rdrand_supported ())
-    {
+
+  /* Default when no -i option: use hardware */
+  if (opt.input == 0) {
+    initialize = hardware_rand64_init;
+      rand64 = hardware_rand64;
+      finalize = hardware_rand64_fini;    
+  } 
+
+  /* Option 1: rdrand */
+  else if (opt.input == 1) {
+    if (rdrand_supported ()) {
       initialize = hardware_rand64_init;
       rand64 = hardware_rand64;
-      finalize = hardware_rand64_fini;
+      finalize = hardware_rand64_fini;    
+    } else {
+      fprintf (stderr, "rdrand is not available because it is not supported.");
+      return 1;
     }
-  else
-    {
-      initialize = software_rand64_init;
-      rand64 = software_rand64;
-      finalize = software_rand64_fini;
-    }
+  }
+  /* Option 2: mrand48_r */
+  else if (opt.input == 2) {
+
+  }
+  else if (opt.input == 3) {
+    filename_init(opt.source);
+    initialize = software_rand64_init;
+    rand64 = software_rand64;
+    finalize = software_rand64_fini;
+  } else {
+    fprintf(stderr, "All input options failed");
+    return 1;
+  }
+
 
   initialize ();
   int wordsize = sizeof rand64 ();

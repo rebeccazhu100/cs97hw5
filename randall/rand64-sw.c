@@ -7,6 +7,7 @@
 FILE *urandstream;
 
 /* Initialize stream using file /F as source */
+
 void filename_init (char* file) {
   urandstream = fopen (file, "r");
   if (!urandstream) {
