@@ -1,21 +1,27 @@
-#include <cpuid.h>
-#include <errno.h>
-#include <immintrin.h>
-#include <limits.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "rand64-sw.h"
+
 /* Input stream containing random bytes.  */
-static FILE *urandstream;
+FILE *urandstream;
+
+/* Initialize stream using file /F as source */
+void filename_init (char* file) {
+  urandstream = fopen (file, "r");
+  if (!urandstream) {
+    fprintf (stderr, "Filename invalid");
+    abort ();
+  }
+}
 
 /* Initialize the software rand64 implementation.  */
 void
 software_rand64_init (void)
 {
-  urandstream = fopen ("/dev/random", "r");
-  if (! urandstream)
-    abort ();
+  if (urandstream == NULL) {
+    urandstream = fopen ("/dev/random", "r");
+  }
 }
 
 /* Return a random value, using software operations.  */
